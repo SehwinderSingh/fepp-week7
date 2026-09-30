@@ -7,6 +7,21 @@ const ProductPage = () => {
 
   const [product, setProduct] = useState(null);
   const [error, setError] = useState("");
+  const deleteProduct = async () => {
+    try {
+      const response = await fetch(`/api/products/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete product");
+      }
+
+      navigate(-1);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -80,6 +95,7 @@ const ProductPage = () => {
       </p>
 
       <button onClick={() => navigate(-1)}>Back</button>
+      <button onClick={deleteProduct}>Delete Product</button>
     </div>
   );
 };
