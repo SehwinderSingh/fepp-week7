@@ -7,7 +7,10 @@ const ProductPage = () => {
 
   const [product, setProduct] = useState(null);
   const [error, setError] = useState("");
+
   const deleteProduct = async () => {
+    const confirm = window.confirm("Are you sure you want to delete this product?");
+    if (!confirm) return;
     try {
       const response = await fetch(`/api/products/${id}`, {
         method: "DELETE",
@@ -17,7 +20,7 @@ const ProductPage = () => {
         throw new Error("Failed to delete product");
       }
 
-      navigate(-1);
+      navigate("/", { replace: true });
     } catch (error) {
       setError(error.message);
     }
@@ -46,7 +49,7 @@ const ProductPage = () => {
     return (
       <div className="product-details">
         <p role="alert">{error}</p>
-        <button onClick={() => navigate(-1)}>Back</button>
+        <button onClick={() => navigate("/")}>Back</button>
       </div>
     );
   }
@@ -94,7 +97,8 @@ const ProductPage = () => {
         {product.supplier?.isVerified ? "Yes" : "No"}
       </p>
 
-      <button onClick={() => navigate(-1)}>Back</button>
+      <button onClick={() => navigate("/")}>Back</button>
+      <button onClick={() => navigate(`/edit/${product._id}`)}>Edit Product</button>
       <button onClick={deleteProduct}>Delete Product</button>
     </div>
   );
