@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Signup = () => {
-  const [fullName, setFullName] = useState("");
+const Signup = ({ setIsAuthenticated }) => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phone_number, setPhoneNumber] = useState("");
   const [gender, setGender] = useState("");
   const [date_of_birth, setDateOfBirth] = useState("");
-  const [accountType, setAccountType] = useState("Active");
+  const [membership_status, setMembershipStatus] = useState("Active");
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
@@ -24,13 +24,13 @@ const Signup = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          fullName,
+          name,
           email,
           password,
-          phoneNumber,
+          phone_number,
           gender,
           date_of_birth,
-          accountType,
+          membership_status,
         }),
       });
 
@@ -41,6 +41,8 @@ const Signup = () => {
       }
 
       localStorage.setItem("user", JSON.stringify(data));
+      setIsAuthenticated(true);
+      setIsAuthenticated(true);
       navigate("/");
     } catch (error) {
       setError(error.message);
@@ -57,8 +59,8 @@ const Signup = () => {
           <input
             id="fullName"
             type="text"
-            value={fullName}
-            onChange={(event) => setFullName(event.target.value)}
+            value={name}
+            onChange={(event) => setName(event.target.value)}
             required
           />
         </div>
@@ -90,7 +92,7 @@ const Signup = () => {
           <input
             id="phoneNumber"
             type="tel"
-            value={phoneNumber}
+            value={phone_number}
             onChange={(event) => setPhoneNumber(event.target.value)}
             required
           />
@@ -119,12 +121,12 @@ const Signup = () => {
         </div>
 
         <div>
-          <label htmlFor="accountType">Account type</label>
+          <label htmlFor="membershipStatus">Account type</label>
           <input
-            id="accountType"
+            id="membershipStatus"
             type="text"
-            value={accountType}
-            onChange={(event) => setAccountType(event.target.value)}
+            value={membership_status}
+            onChange={(event) => setMembershipStatus(event.target.value)}
             required
           />
         </div>

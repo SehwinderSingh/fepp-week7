@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-const ProductPage = () => {
+const ProductPage = ({ isAuthenticated }) => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -12,8 +12,12 @@ const ProductPage = () => {
     const confirm = window.confirm("Are you sure you want to delete this product?");
     if (!confirm) return;
     try {
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
       const response = await fetch(`/api/products/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
       });
 
       if (!response.ok) {
@@ -98,8 +102,17 @@ const ProductPage = () => {
       </p>
 
       <button onClick={() => navigate("/")}>Back</button>
-      <button onClick={() => navigate(`/edit/${product._id}`)}>Edit Product</button>
-      <button onClick={deleteProduct}>Delete Product</button>
+
+      {isAuthenticated && (
+        <>
+          <button onClick={() => navigate(`/edit/${product._id}`)}>
+            Edit Product
+          </button>
+          <button onClick={deleteProduct}>
+            Delete Product
+          </button>
+        </>
+      )}
     </div>
   );
 };
