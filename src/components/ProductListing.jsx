@@ -4,7 +4,7 @@ const ProductListing = ({ product }) => {
   return (
     <div className="product-listing">
       <h2>
-        <Link to={`/products/${product._id}`}>
+        <Link to={`/products/${product.id}`}>
           {product.productName}
         </Link>
       </h2>

@@ -105,7 +105,7 @@ const ProductPage = ({ isAuthenticated }) => {
 
       {isAuthenticated && (
         <>
-          <button onClick={() => navigate(`/edit/${product._id}`)}>
+          <button onClick={() => navigate(`/edit/${product.id}`)}>
             Edit Product
           </button>
           <button onClick={deleteProduct}>
