@@ -1,40 +1,27 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useField from "../hooks/useField";
+import useLogin from "../hooks/useLogin";
 
 const Login = ({ setIsAuthenticated }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const email = useField("email");
+  const password = useField("password");
+
+  const { login, error } = useLogin("/api/users/login");
 
   const navigate = useNavigate();
 
   const submitForm = async (event) => {
     event.preventDefault();
-    setError(null);
 
-    try {
-      const response = await fetch("/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+    const data = await login({
+      email: email.value,
+      password: password.value,
+    });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Login failed");
-      }
-
+    if (data) {
       localStorage.setItem("user", JSON.stringify(data));
       setIsAuthenticated(true);
       navigate("/");
-    } catch (error) {
-      setError(error.message);
     }
   };
 
@@ -47,9 +34,7 @@ const Login = ({ setIsAuthenticated }) => {
           <label htmlFor="loginEmail">Email</label>
           <input
             id="loginEmail"
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            {...email}
             required
           />
         </div>
@@ -58,9 +43,7 @@ const Login = ({ setIsAuthenticated }) => {
           <label htmlFor="loginPassword">Password</label>
           <input
             id="loginPassword"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            {...password}
             required
           />
         </div>

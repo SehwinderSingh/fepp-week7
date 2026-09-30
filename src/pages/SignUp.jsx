@@ -1,51 +1,37 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useField from "../hooks/useField";
+import useSignup from "../hooks/useSignup";
 
 const Signup = ({ setIsAuthenticated }) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phone_number, setPhoneNumber] = useState("");
-  const [gender, setGender] = useState("");
-  const [date_of_birth, setDateOfBirth] = useState("");
-  const [membership_status, setMembershipStatus] = useState("Active");
-  const [error, setError] = useState(null);
+  const name = useField("text");
+  const email = useField("email");
+  const password = useField("password");
+  const phone_number = useField("tel");
+  const gender = useField("text");
+  const date_of_birth = useField("date");
+  const membership_status = useField("text");
+
+  const { signup, error } = useSignup("/api/users/signup");
 
   const navigate = useNavigate();
 
   const submitForm = async (event) => {
     event.preventDefault();
-    setError(null);
 
-    try {
-      const response = await fetch("/api/users/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          phone_number,
-          gender,
-          date_of_birth,
-          membership_status,
-        }),
-      });
+    const data = await signup({
+      name: name.value,
+      email: email.value,
+      password: password.value,
+      phone_number: phone_number.value,
+      gender: gender.value,
+      date_of_birth: date_of_birth.value,
+      membership_status: membership_status.value || "Active",
+    });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Signup failed");
-      }
-
+    if (data) {
       localStorage.setItem("user", JSON.stringify(data));
       setIsAuthenticated(true);
-      setIsAuthenticated(true);
       navigate("/");
-    } catch (error) {
-      setError(error.message);
     }
   };
 
@@ -56,79 +42,37 @@ const Signup = ({ setIsAuthenticated }) => {
       <form onSubmit={submitForm}>
         <div>
           <label htmlFor="fullName">Full name</label>
-          <input
-            id="fullName"
-            type="text"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            required
-          />
+          <input id="fullName" {...name} required />
         </div>
 
         <div>
           <label htmlFor="signupEmail">Email</label>
-          <input
-            id="signupEmail"
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
+          <input id="signupEmail" {...email} required />
         </div>
 
         <div>
           <label htmlFor="signupPassword">Password</label>
-          <input
-            id="signupPassword"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-          />
+          <input id="signupPassword" {...password} required />
         </div>
 
         <div>
           <label htmlFor="phoneNumber">Phone number</label>
-          <input
-            id="phoneNumber"
-            type="tel"
-            value={phone_number}
-            onChange={(event) => setPhoneNumber(event.target.value)}
-            required
-          />
+          <input id="phoneNumber" {...phone_number} required />
         </div>
 
         <div>
           <label htmlFor="gender">Gender</label>
-          <input
-            id="gender"
-            type="text"
-            value={gender}
-            onChange={(event) => setGender(event.target.value)}
-            required
-          />
+          <input id="gender" {...gender} required />
         </div>
 
         <div>
           <label htmlFor="dateOfBirth">Date of birth</label>
-          <input
-            id="dateOfBirth"
-            type="date"
-            value={date_of_birth}
-            onChange={(event) => setDateOfBirth(event.target.value)}
-            required
-          />
+          <input id="dateOfBirth" {...date_of_birth} required />
         </div>
 
         <div>
           <label htmlFor="membershipStatus">Account type</label>
-          <input
-            id="membershipStatus"
-            type="text"
-            value={membership_status}
-            onChange={(event) => setMembershipStatus(event.target.value)}
-            required
-          />
+          <input id="membershipStatus" {...membership_status} required />
         </div>
 
         <button type="submit">Sign up</button>
